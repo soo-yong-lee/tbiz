@@ -88,9 +88,9 @@
         <!-- 검색 영역 -->
         <div class="search-container mb-4">
             <div class="row">
-                <div class="col-md-10">
+                <!--<div class="col-md-10">
                     <input type="text" id="companyInput" class="form-control form-control-lg" placeholder="기업명을 입력하세요">
-                </div>
+                </div>-->
                 <div class="col-md-2 text-center">
                     <button class="btn btn-light btn-lg w-100" id="searchBtn">
                         <i class="fas fa-search"></i> 검색
@@ -110,7 +110,7 @@
             let jsonData = []; // 엑셀 데이터를 저장할 변수
 
             // 엑셀 파일 경로
-            const filePath = '기업매칭사업V4.xlsx';
+            const filePath = '기업매칭사업 V4.xlsx';
 
             // 엑셀 파일 읽기
             fetch(filePath)
@@ -125,7 +125,8 @@
 
                     // 데이터를 JSON 형식으로 변환
                     jsonData = XLSX.utils.sheet_to_json(sheet);
-
+                    
+                    renderCards(filteredData);
                   
                 })
                 .catch(error => {
