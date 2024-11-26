@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기업 추천 사업 조회</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        h1 {
+            color: #343a40;
+            margin-bottom: 20px;
+        }
+        .search-container {
+            background: linear-gradient(135deg, #007bff, #6f42c1);
+            padding: 20px;
+            border-radius: 8px;
+            color: white;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .card-container {
+            margin-top: 20px;
+        }
+        .company-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            transition: transform 0.2s;
+        }
+        .company-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .company-card h3 {
+            color: #007bff;
+        }
+        .recommendation {
+            margin-top: 20px;
+        }
+        .recommendation .title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #343a40;
+            display: flex;
+            align-items: center;
+        }
+        .recommendation .title i {
+            color: #007bff;
+            margin-right: 10px;
+        }
+        .recommendation .content {
+            background-color: #f1f1f1;
+            border-radius: 6px;
+            padding: 10px 15px;
+            margin-top: 5px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #495057;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-5">
+        <h1 class="text-center"><i class="fas fa-building"></i> 기업 추천 사업 조회</h1>
+        <div class="mb-3">
+            <input type="file" id="uploadExcel" class="form-control">
+        </div>
+        <!-- 검색 영역 -->
+        <div class="search-container mb-4">
+            <div class="row">
+                <div class="col-md-10">
+                    <input type="text" id="companyInput" class="form-control form-control-lg" placeholder="기업명을 입력하세요">
+                </div>
+                <div class="col-md-2 text-center">
+                    <button class="btn btn-light btn-lg w-100" id="searchBtn">
+                        <i class="fas fa-search"></i> 검색
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 카드 영역 -->
+        <div class="card-container" id="cardContainer">
+            <!-- 데이터 카드가 여기에 동적으로 추가됩니다 -->
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            let jsonData = []; // 엑셀 데이터를 저장할 변수
+
+            // 엑셀 파일 경로
+            const filePath = '기업매칭사업 V4.xlsx';
+
+            // 엑셀 파일 읽기
+            fetch(filePath)
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.arrayBuffer();
+                })
+                .then(data => {
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const sheetName = workbook.SheetNames[2]; 
+                    const sheet = workbook.Sheets[sheetName];
+
+                    // 데이터를 JSON 형식으로 변환
+                    jsonData = XLSX.utils.sheet_to_json(sheet);
+
+                  
+                })
+                .catch(error => {
+                    console.error('파일 로드 중 오류 발생:', error);
+                });
+                
+            // 엔터키 이벤트와 검색 버튼 클릭 이벤트를 처리
+            $('#companyInput').on('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+
+            $('#searchBtn').on('click', performSearch);
+           
+            // 검색 기능 함수
+            function performSearch() {
+                const input = $('#companyInput').val().trim().toLowerCase(); // 입력값을 소문자로 변환
+                if (!input) {
+                    alert('기업명을 입력하세요!');
+                    return;
+                }
+
+                // LIKE 검색 구현 (입력값이 포함된 기업명을 찾음)
+                const filteredData = jsonData.filter(row => row['기업명'] && row['기업명'].toLowerCase().includes(input));
+                if (filteredData.length === 0) {
+                    alert('해당 기업에 대한 추천 사업이 없습니다.');
+                }
+
+                // 필터링된 데이터 렌더링
+                 //renderTable(filteredData);
+                renderCards(filteredData);
+            }
+
+            // 테이블 렌더링 함수
+            function renderTable(data) {
+                const $tableBody = $('#dataTable');
+                $tableBody.empty(); // 기존 데이터 초기화
+                data.forEach(row => {
+                    const rowHtml = `
+                        <tr class="fade-in">
+                            <td>${row['기업명'] || ''}</td>
+                            <td>${row['추천 사업1'] || ''}</td>
+                            <td>${row['추천 사업 2'] || ''}</td>
+                            <td>${row['추천 사업 3'] || ''}</td>
+                            <td>${row['추천 사업 4'] || ''}</td>
+                        </tr>`;
+                    $tableBody.append(rowHtml);
+                });
+            }
+
+       
+
+
+
+        // 파일 업로드 핸들러
+        $('#uploadExcel').on('change', function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
+    
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+    
+                // 첫 번째 시트 가져오기
+                const sheetName = workbook.SheetNames[2];
+                const sheet = workbook.Sheets[sheetName];
+    
+                // 시트 데이터를 JSON으로 변환
+                //const json = XLSX.utils.sheet_to_json(sheet);
+                jsonData = XLSX.utils.sheet_to_json(sheet);
+
+                console.log('데이터');
+                console.log(jsonData);
+    
+                // 초기 데이터 로드 (전체 목록 표시)
+                renderCards(jsonData);
+
+                
+            };
+    
+            // 파일 읽기
+            reader.readAsArrayBuffer(file);
+        });
+
+
+        // 카드 렌더링 함수
+        function renderCards(data) {
+                const $cardContainer = $('#cardContainer');
+                $cardContainer.empty(); // 기존 데이터 초기화
+                data.forEach(row => {
+                    const cardHtml = `
+                        <div class="company-card fade-in">
+                            <h3>${row['기업명'] || ''}</h3>
+                            <div class="recommendation">
+                                <div class="title"><i class="fas fa-check-circle"></i> 추천 사업 1</div>
+                                <div class="content">${row['추천 사업1'] || '정보 없음'}</div>
+                            </div>
+                            <div class="recommendation">
+                                <div class="title"><i class="fas fa-check-circle"></i> 추천 사업 2</div>
+                                <div class="content">${row['추천 사업 2'] || '정보 없음'}</div>
+                            </div>
+                            <div class="recommendation">
+                                <div class="title"><i class="fas fa-check-circle"></i> 추천 사업 3</div>
+                                <div class="content">${row['추천 사업 3'] || '정보 없음'}</div>
+                            </div>
+                            <div class="recommendation">
+                                <div class="title"><i class="fas fa-check-circle"></i> 추천 사업 4</div>
+                                <div class="content">${row['추천 사업 4'] || '정보 없음'}</div>
+                            </div>
+                        </div>`;
+                    $cardContainer.append(cardHtml);
+                });
+            }
+        });
+
+
+        
+    </script>
+</body>
+</html>
+
