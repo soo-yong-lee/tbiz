@@ -227,8 +227,8 @@
                     console.log(jsonData);
 
                     // 초기화: 셀렉트 박스 채우기
-                    populateYearSelect();
-                    populateIndustrySelect();
+                    populateYearSelect(jsonData);
+                    populateIndustrySelect(jsonData);
 
 
                   
@@ -306,7 +306,7 @@
 
 
          // 유니크한 설립일 제한(연도) 값 추출 후 셀렉트 박스에 추가
-         function populateYearSelect() {
+         function populateYearSelect(jsonData) {
             const uniqueYears = [...new Set(jsonData.map(item => item.기관))]; // 중복 제거
             const select = document.getElementById("기관");
 
@@ -321,7 +321,7 @@
         }
 
           // 유니크한 산업코드 추출 및 셀렉트 박스에 추가
-          function populateIndustrySelect() {
+          function populateIndustrySelect(jsonData) {
             const industrySet = new Set();
             jsonData.forEach(item => {
                 item.산업코드.split(',').forEach(code => industrySet.add(code.trim()));
