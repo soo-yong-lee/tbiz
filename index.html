@@ -267,8 +267,10 @@
 
                 // LIKE 검색 구현 (입력값이 포함된 기업명을 찾음)
                 const filteredData = jsonData.filter(item => {
+                    if(item.매출액최대=='없음')item.매출액최대=9999999999999;
                 return (
-                    (!매출액 || (parseInt(item.매출액최소) <= parseInt(매출액) && parseInt(매출액) <= item.매출액최대=='없음'?99999999999999999: parseInt(item.매출액최대) )) &&
+
+                    (!매출액 || (parseInt(item.매출액최소) <= parseInt(매출액) && parseInt(매출액) <= parseInt(item.매출액최대) )) &&
                     //(!설립일 || item.설립일제한 === 설립일) &&
                     (!기관 || item.기관.includes(기관)) &&
                     (!지역제한 || item.지역제한.includes("없음") || item.지역제한.includes(지역제한)) &&
