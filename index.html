@@ -308,10 +308,11 @@
             const select = document.getElementById("기관");
 
             // 옵션 추가
-            uniqueYears.forEach(year => {
+            uniqueYears.forEach(code => {
                 const option = document.createElement("option");
-                option.value = year;
-                option.textContent = year === "없음" ? "제한 없음" : year;
+                option.value = code;
+                //option.textContent = year === "없음" ? "제한 없음" : code;
+                option.textContent = code;
                 select.appendChild(option);
             });
         }
