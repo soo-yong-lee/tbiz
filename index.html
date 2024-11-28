@@ -77,27 +77,110 @@
                 transform: translateY(0);
             }
         }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
     </style>
 </head>
 <body>
     <div class="container my-5">
-        <h1 class="text-center"><i class="fas fa-building"></i> 기업 추천 사업 조회</h1>
-        <div class="mb-3" style="display: none;">
-            <input type="file" id="uploadExcel" class="form-control">
+        <h1>사업 검색</h1>
+        <div class="form-group">
+            <label for="매출액제한">매출액 제한 (백만원)</label>
+            <input type="number" id="매출액제한" placeholder="예: 500">
         </div>
-        <!-- 검색 영역 -->
-        <div class="search-container mb-4">
-            <div class="row">
-                <div class="col-md-10">
-                    <input type="text" id="companyInput" class="form-control form-control-lg" placeholder="기업명을 입력하세요">
-                </div>
-                <div class="col-md-2 text-center">
-                    <button class="btn btn-light btn-lg w-100" id="searchBtn">
-                        <i class="fas fa-search"></i> 검색
-                    </button>
-                </div>
-            </div>
+        <div class="form-group">
+            <label for="설립일제한">설립일 제한 (연도)</label>
+            <select id="설립일제한">
+                <!-- 옵션은 JavaScript로 동적으로 추가됩니다 -->
+            </select>
         </div>
+        <div class="form-group">
+            <label for="기관">기관</label>
+            <input type="text" id="기관" placeholder="예: 중소벤처기업부">
+        </div>
+        <div class="form-group">
+            <label for="지역제한">지역 제한</label>
+            <input type="text" id="지역제한" placeholder="예: 서울">
+        </div>
+        <div class="form-group">
+            <label for="특허권보유">특허권 보유 여부</label>
+            <select id="특허권보유">
+                <option value="">선택</option>
+                <option value="X">X</option>
+                <option value="O">O</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="산업코드">산업 코드</label>
+            <select id="산업코드">
+                <!-- 옵션은 JavaScript로 동적으로 추가됩니다 -->
+            </select>
+        </div>
+        <button onclick="search()">검색</button>
 
         <!-- 카드 영역 -->
         <div class="card-container" id="cardContainer">
