@@ -186,10 +186,19 @@
         </div>
         <button id="searchBtn">검색</button>
 
-        <!-- 카드 영역 -->
-        <div class="card-container" id="cardContainer">
-            <!-- 데이터 카드가 여기에 동적으로 추가됩니다 -->
-        </div>
+        <table id="resultTable">
+            <thead>
+                <tr>
+                    <th>사업명</th>
+                    <th>사업비</th>
+                    <th>기관</th>
+                    <th>지역 제한</th>
+                    <th>특허권 보유</th>
+                    <th>산업 코드</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
 
     <script>
@@ -229,17 +238,6 @@
 
             $('#searchBtn').on('click', performSearch);
            
-
-            // 입력 값 가져오기
-            const 매출액제한 = document.getElementById("매출액제한").value;
-            const 설립일제한 = document.getElementById("설립일제한").value;
-            const 기관 = document.getElementById("기관").value.trim();
-            const 지역제한 = document.getElementById("지역제한").value.trim();
-            const 특허권보유 = document.getElementById("특허권보유").value;
-            const 산업코드 = document.getElementById("산업코드").value.trim();
-
-
-
             // 검색 기능 함수
             function performSearch() {
                 const input = $('#companyInput').val().trim().toLowerCase(); // 입력값을 소문자로 변환
@@ -247,6 +245,15 @@
                     alert('기업명을 입력하세요!');
                     return;
                 }
+
+                // 입력 값 가져오기
+                const 매출액제한 = document.getElementById("매출액제한").value;
+                const 설립일제한 = document.getElementById("설립일제한").value;
+                const 기관 = document.getElementById("기관").value.trim();
+                const 지역제한 = document.getElementById("지역제한").value.trim();
+                const 특허권보유 = document.getElementById("특허권보유").value;
+                const 산업코드 = document.getElementById("산업코드").value.trim();
+
 
                 // LIKE 검색 구현 (입력값이 포함된 기업명을 찾음)
                 const filteredData = jsonData.filter(item => {
@@ -264,75 +271,30 @@
                     alert('해당 기업에 대한 추천 사업이 없습니다.');
                 }
 
-                // 필터링된 데이터 렌더링
-                 //renderTable(filteredData);
-                renderCards(filteredData);
+
+                // 결과 렌더링
+                const tbody = document.querySelector("#resultTable tbody");
+                tbody.innerHTML = filteredData.map(item => `
+                    <tr>
+                        <td>${item.사업명}</td>
+                        <td>${item.사업비}</td>
+                        <td>${item.기관}</td>
+                        <td>${item.지역제한}</td>
+                        <td>${item.특허권}</td>
+                        <td>${item.산업코드}</td>
+                    </tr>
+                `).join("");
+
+
             }
 
-        // 파일 업로드 핸들러
-        $('#uploadExcel').on('change', function (event) {
-            const file = event.target.files[0];
-            if (!file) return;
-    
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-    
-                // 첫 번째 시트 가져오기
-                const sheetName = workbook.SheetNames[2];
-                const sheet = workbook.Sheets[sheetName];
-    
-                // 시트 데이터를 JSON으로 변환
-                //const json = XLSX.utils.sheet_to_json(sheet);
-                jsonData = XLSX.utils.sheet_to_json(sheet);
 
-                console.log('데이터');
-                console.log(jsonData);
-    
-                // 초기 데이터 로드 (전체 목록 표시)
-                renderCards(jsonData);
-
-                
-            };
-    
-            // 파일 읽기
-            reader.readAsArrayBuffer(file);
-        });
-
-
-        // 카드 렌더링 함수
-        function renderCards(data) {
-                const $cardContainer = $('#cardContainer');
-                $cardContainer.empty(); // 기존 데이터 초기화
-                data.forEach(row => {
-                    const cardHtml = `
-                        <div class="company-card fade-in">
-                            <h3>${row['사업명'] || ''}</h3>
-                            <div class="recommendation">
-                                <div class="title"><i class="fas fa-check-circle"></i> 추천 사업 1</div>
-                                <div class="content">${row['추천 사업1'] || '정보 없음'}</div>
-                            </div>
-                            <div class="recommendation">
-                                <div class="title"><i class="fas fa-check-circle"></i> 추천 사업 2</div>
-                                <div class="content">${row['추천 사업 2'] || '정보 없음'}</div>
-                            </div>
-                            <div class="recommendation">
-                                <div class="title"><i class="fas fa-check-circle"></i> 추천 사업 3</div>
-                                <div class="content">${row['추천 사업 3'] || '정보 없음'}</div>
-                            </div>
-                            <div class="recommendation">
-                                <div class="title"><i class="fas fa-check-circle"></i> 추천 사업 4</div>
-                                <div class="content">${row['추천 사업 4'] || '정보 없음'}</div>
-                            </div>
-                        </div>`;
-                    $cardContainer.append(cardHtml);
-                });
-            }
-        });
+            
 
 
         
+        });
+
     </script>
 </body>
 </html>
