@@ -176,7 +176,7 @@
         <div class="form-group">
             <label for="특허권보유">특허권 보유 여부</label>
             <select id="특허권보유">
-                <option value="">선택</option>
+                <option value="">전체</option>
                 <option value="X">X</option>
                 <option value="O">O</option>
             </select>
@@ -271,7 +271,7 @@
                     (!매출액제한 || item.사업비 <= parseInt(매출액제한)) &&
                     //(!설립일 || item.설립일제한 === 설립일) &&
                     (!기관 || item.기관.includes(기관)) &&
-                    (!지역제한 || item.산업코드.includes("없음") || item.지역제한.includes(지역제한)) &&
+                    (!지역제한 || item.지역제한.includes("없음") || item.지역제한.includes(지역제한)) &&
                     (!특허권보유 || item.특허권보유여부 === 특허권보유) &&
                     (!산업코드 || item.산업코드.includes("제한없음") || item.산업코드.includes(산업코드))
                 );
