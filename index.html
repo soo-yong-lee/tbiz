@@ -207,7 +207,7 @@
                 })
                 .then(data => {
                     const workbook = XLSX.read(data, { type: 'array' });
-                    const sheetName = workbook.SheetNames[2]; 
+                    const sheetName = workbook.SheetNames[1]; 
                     const sheet = workbook.Sheets[sheetName];
 
                     // 데이터를 JSON 형식으로 변환
@@ -229,6 +229,17 @@
 
             $('#searchBtn').on('click', performSearch);
            
+
+            // 입력 값 가져오기
+            const 매출액제한 = document.getElementById("매출액제한").value;
+            const 설립일제한 = document.getElementById("설립일제한").value;
+            const 기관 = document.getElementById("기관").value.trim();
+            const 지역제한 = document.getElementById("지역제한").value.trim();
+            const 특허권보유 = document.getElementById("특허권보유").value;
+            const 산업코드 = document.getElementById("산업코드").value.trim();
+
+
+
             // 검색 기능 함수
             function performSearch() {
                 const input = $('#companyInput').val().trim().toLowerCase(); // 입력값을 소문자로 변환
@@ -238,7 +249,17 @@
                 }
 
                 // LIKE 검색 구현 (입력값이 포함된 기업명을 찾음)
-                const filteredData = jsonData.filter(row => row['기업명'] && row['기업명'].toLowerCase().includes(input));
+                const filteredData = jsonData.filter(item => {
+                return (
+                    (!매출액제한 || item.사업비 <= parseInt(매출액제한)) &&
+                    (!설립일제한 || item.설립일제한 === 설립일제한) &&
+                    (!기관 || item.기관.includes(기관)) &&
+                    (!지역제한 || item.지역제한.includes(지역제한)) &&
+                    (!특허권보유 || item.특허권 === 특허권보유) &&
+                    (!산업코드 || item.산업코드.includes(산업코드))
+                );
+            });
+
                 if (filteredData.length === 0) {
                     alert('해당 기업에 대한 추천 사업이 없습니다.');
                 }
@@ -247,27 +268,6 @@
                  //renderTable(filteredData);
                 renderCards(filteredData);
             }
-
-            // 테이블 렌더링 함수
-            function renderTable(data) {
-                const $tableBody = $('#dataTable');
-                $tableBody.empty(); // 기존 데이터 초기화
-                data.forEach(row => {
-                    const rowHtml = `
-                        <tr class="fade-in">
-                            <td>${row['기업명'] || ''}</td>
-                            <td>${row['추천 사업1'] || ''}</td>
-                            <td>${row['추천 사업 2'] || ''}</td>
-                            <td>${row['추천 사업 3'] || ''}</td>
-                            <td>${row['추천 사업 4'] || ''}</td>
-                        </tr>`;
-                    $tableBody.append(rowHtml);
-                });
-            }
-
-       
-
-
 
         // 파일 업로드 핸들러
         $('#uploadExcel').on('change', function (event) {
@@ -308,7 +308,7 @@
                 data.forEach(row => {
                     const cardHtml = `
                         <div class="company-card fade-in">
-                            <h3>${row['기업명'] || ''}</h3>
+                            <h3>${row['사업명'] || ''}</h3>
                             <div class="recommendation">
                                 <div class="title"><i class="fas fa-check-circle"></i> 추천 사업 1</div>
                                 <div class="content">${row['추천 사업1'] || '정보 없음'}</div>
