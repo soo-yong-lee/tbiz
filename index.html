@@ -153,8 +153,8 @@
             <input type="text" id="companyInput"  placeholder="기업명을 입력하세요">
         </div>
         <div class="form-group">
-            <label for="매출액제한">매출액 제한 (백만원)</label>
-            <input type="number" id="매출액제한" placeholder="예: 500">
+            <label for="매출액">매출액(백만원)</label>
+            <input type="number" id="매출액" placeholder="예: 500">
         </div>
         <div class="form-group">
             <label for="설립일제한">설립일(연도)</label>
@@ -258,7 +258,7 @@
                 }
 
                 // 입력 값 가져오기
-                const 매출액제한 = document.getElementById("매출액제한").value;
+                const 매출액 = document.getElementById("매출액").value;
                 const 설립일 = document.getElementById("설립일").value;
                 const 기관 = document.getElementById("기관").value.trim();
                 const 지역제한 = document.getElementById("지역제한").value.trim();
@@ -269,7 +269,7 @@
                 // LIKE 검색 구현 (입력값이 포함된 기업명을 찾음)
                 const filteredData = jsonData.filter(item => {
                 return (
-                    (!매출액제한 || item.사업비 <= parseInt(매출액제한)) &&
+                    (!매출액 || item.매출액최소(백만원) <= parseInt(매출액) <= item.매출액최대(백만원) ) &&
                     //(!설립일 || item.설립일제한 === 설립일) &&
                     (!기관 || item.기관.includes(기관)) &&
                     (!지역제한 || item.지역제한.includes("없음") || item.지역제한.includes(지역제한)) &&
