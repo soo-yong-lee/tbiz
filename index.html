@@ -326,6 +326,8 @@
             jsonData.forEach(item => {
                 item.산업코드.split(',').forEach(code => industrySet.add(code.trim()));
             });
+            
+            industrySet.delete("제한없음");
 
             const industryCodes = ["제한없음", ...Array.from(industrySet)];
             const select = document.getElementById("산업코드");
