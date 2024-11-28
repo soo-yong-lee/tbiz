@@ -222,7 +222,11 @@
                     // 데이터를 JSON 형식으로 변환
                     jsonData = XLSX.utils.sheet_to_json(sheet);
                     
-                    renderCards(jsonData);
+                    // 초기화: 셀렉트 박스 채우기
+                    populateYearSelect();
+                    populateIndustrySelect();
+
+
                   
                 })
                 .catch(error => {
@@ -295,6 +299,39 @@
         
         });
 
+
+
+         // 유니크한 설립일 제한(연도) 값 추출 후 셀렉트 박스에 추가
+         function populateYearSelect() {
+            const uniqueYears = [...new Set(jsonData.map(item => item.설립일제한))]; // 중복 제거
+            const select = document.getElementById("설립일제한");
+
+            // 옵션 추가
+            uniqueYears.forEach(year => {
+                const option = document.createElement("option");
+                option.value = year;
+                option.textContent = year === "없음" ? "제한 없음" : year;
+                select.appendChild(option);
+            });
+        }
+
+          // 유니크한 산업코드 추출 및 셀렉트 박스에 추가
+          function populateIndustrySelect() {
+            const industrySet = new Set();
+            jsonData.forEach(item => {
+                item.산업코드.split(',').forEach(code => industrySet.add(code.trim()));
+            });
+
+            const industryCodes = ["제한없음", ...Array.from(industrySet)];
+            const select = document.getElementById("산업코드");
+
+            industryCodes.forEach(code => {
+                const option = document.createElement("option");
+                option.value = code;
+                option.textContent = code;
+                select.appendChild(option);
+            });
+        }    
     </script>
 </body>
 </html>
