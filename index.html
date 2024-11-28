@@ -170,6 +170,7 @@
         <div class="form-group">
             <label for="지역제한">지역 제한</label>
             <select id="지역제한">
+                <option value="">전체</option>
                 <!-- 옵션은 JavaScript로 동적으로 추가됩니다 -->
             </select>
         </div>
@@ -287,7 +288,7 @@
                 tbody.innerHTML = filteredData.map(item => `
                     <tr>
                         <td>${item.사업명}</td>
-                        <td>${item.사업비}</td>
+                        <td>${item.사업비(백만원)}</td>
                         <td>${item.기관}</td>
                         <td>${item.지역제한}</td>
                         <td>${item.특허권보유여부}</td>
