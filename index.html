@@ -157,8 +157,23 @@
             <input type="number" id="매출액" placeholder="예: 500">
         </div>
         <div class="form-group">
-            <label for="설립일제한">설립일(연도)</label>
-            <input type="text" id="설립일" placeholder="예: 2024">
+            <label for="설립일연도">설립일(연도)</label>
+            <input type="text" id="설립일연도" placeholder="예: 202411">
+            <label for="설립일월">설립일(월)</label>
+            <select id="설립일월">
+                <option value="1">1월</option>
+                <option value="2">2월</option>
+                <option value="3">3월</option>
+                <option value="4">4월</option>
+                <option value="5">5월</option>
+                <option value="6">6월</option>
+                <option value="7">7월</option>
+                <option value="8">8월</option>
+                <option value="9">9월</option>
+                <option value="10">10월</option>
+                <option value="11">11월</option>
+                <option value="12">12월</option>
+            </select>
         </div>
         <div class="form-group">
             <label for="기관">기관</label>
@@ -258,16 +273,21 @@
 
                 // 입력 값 가져오기
                 const 매출액 = document.getElementById("매출액").value;
-                const 설립일 = document.getElementById("설립일").value;
+                const 설립일연도 = document.getElementById("설립일연도").value;
+                const 설립일월 = document.getElementById("설립일월").value;
                 const 기관 = document.getElementById("기관").value.trim();
                 const 지역제한 = document.getElementById("지역제한").value.trim();
                 const 특허권보유 = document.getElementById("특허권보유").value;
                 const 산업코드 = document.getElementById("산업코드").value.trim();
-
+                const 몇개월 = 0;
 
                 // LIKE 검색 구현 (입력값이 포함된 기업명을 찾음)
                 const filteredData = jsonData.filter(item => {
                     if(item.매출액최대=='없음')item.매출액최대=9999999999999;
+                    if(설립일연도 != ''){
+                        몇개월=calculateMonthsElapsed(설립일연도, 설립일월);
+                        console.log(몇개월);
+                    }
                 return (
 
                     (!매출액 || (parseInt(item.매출액최소) <= parseInt(매출액) && parseInt(매출액) <= parseInt(item.매출액최대) )) &&
@@ -303,6 +323,26 @@
         
         });
 
+
+        function calculateMonthsElapsed(inputYear, inputMonth) {
+            // 현재 날짜를 가져옵니다.
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear();
+            const currentMonth = currentDate.getMonth() + 1; // getMonth()는 0부터 시작하므로 +1 필요
+
+            // 입력받은 년월을 기준으로 Date 객체를 생성합니다.
+            const inputDate = new Date(inputYear, inputMonth - 1); // Month는 0부터 시작하므로 -1 필요
+
+            // 현재 년월을 월 단위로 변환
+            const totalCurrentMonths = currentYear * 12 + currentMonth;
+            // 입력된 년월을 월 단위로 변환
+            const totalInputMonths = inputYear * 12 + inputMonth;
+
+            // 두 월의 차이를 계산합니다.
+            const monthsElapsed = totalCurrentMonths - totalInputMonths;
+
+            return monthsElapsed;
+        }
 
 
          // 유니크한 설립일 제한(연도) 값 추출 후 셀렉트 박스에 추가
