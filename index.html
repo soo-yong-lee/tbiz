@@ -281,13 +281,16 @@
                 const 산업코드 = document.getElementById("산업코드").value.trim();
                 var 몇개월 = 0;
 
+                if(설립일연도 != ''){
+                        몇개월=calculateMonthsElapsed(parseInt(설립일연도), parseInt(설립일월));
+                        console.log(몇개월);
+                }
+
+
                 // LIKE 검색 구현 (입력값이 포함된 기업명을 찾음)
                 const filteredData = jsonData.filter(item => {
                     if(item.매출액최대=='없음')item.매출액최대=9999999999999;
-                    if(설립일연도 != ''){
-                        몇개월=calculateMonthsElapsed(설립일연도, 설립일월);
-                        console.log(몇개월);
-                    }
+                    
                 return (
 
                     (!매출액 || (parseInt(item.매출액최소) <= parseInt(매출액) && parseInt(매출액) <= parseInt(item.매출액최대) )) &&
