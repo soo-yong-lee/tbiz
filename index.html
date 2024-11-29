@@ -279,7 +279,7 @@
                 const 지역제한 = document.getElementById("지역제한").value.trim();
                 const 특허권보유 = document.getElementById("특허권보유").value;
                 const 산업코드 = document.getElementById("산업코드").value.trim();
-                const 몇개월 = 0;
+                var 몇개월 = 0;
 
                 // LIKE 검색 구현 (입력값이 포함된 기업명을 찾음)
                 const filteredData = jsonData.filter(item => {
@@ -291,7 +291,7 @@
                 return (
 
                     (!매출액 || (parseInt(item.매출액최소) <= parseInt(매출액) && parseInt(매출액) <= parseInt(item.매출액최대) )) &&
-                    //(!설립일 || item.설립일제한 === 설립일) &&
+                    (!설립일연도 || (parseInt(item.설립일최소) <= parseInt(몇개월) && parseInt(몇개월) <= parseInt(item.설립일최대) )) &&
                     (!기관 || item.기관.includes(기관)) &&
                     (!지역제한 || item.지역제한.includes("없음") || item.지역제한.includes(지역제한)) &&
                     (!특허권보유 || item.특허권보유여부 === 특허권보유) &&
